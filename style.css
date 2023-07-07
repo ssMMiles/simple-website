@@ -1,0 +1,293 @@
+body {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+body,
+html {
+  margin: 0;
+  height: 100%;
+}
+
+#theme-switch-moon {
+  display: none;
+}
+
+:root {
+  --transform: none;
+  --slider-bg: #ccc;
+
+  --font-color: #fff;
+  --bg-color: #3a506b;
+  --header-bg-color: #0b132b;
+  --content-bg-color: #1c2541;
+  --accent-color: #5bc0be;
+  --link-color: #8cc0e2;
+  --visited-link-color: #57b373;
+
+  --alt-font-color: #424242;
+  --alt-bg-color: #fff;
+  --alt-header-bg-color: #6d6666;
+  --alt-content-bg-color: #6d6666;
+  --alt-accent-color: #5bc0be;
+  --alt-link-color: #8cc0e2;
+  --alt-visited-link-color: #57b373;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --font-color: #424242;
+    --bg-color: #fff;
+    --header-bg-color: #424242;
+    --content-bg-color: #ccc;
+    --accent-color: #5bc0be;
+    --link-color: #8cc0e2;
+    --visited-link-color: #57b373;
+
+    --alt-font-color: #fff;
+    --alt-bg-color: #000;
+    --alt-content-bg-color: #424242;
+    --alt-header-bg-color: #6d6666;
+    --alt-accent-color: #5bc0be;
+    --alt-link-color: #8cc0e2;
+    --alt-visited-link-color: #57b373;
+  }
+
+  #theme-switch-sun {
+    display: none;
+  }
+
+  #theme-switch-moon {
+    display: inline-block;
+  }
+}
+
+#toggleTheme {
+  display: none;
+}
+
+#toggleTheme:checked ~ #container {
+  --font-color: var(--alt-font-color);
+  --bg-color: var(--alt-bg-color);
+  --header-bg-color: var(--alt-header-bg-color);
+  --content-bg-color: var(--alt-content-bg-color);
+  --accent-color: var(--alt-accent-color);
+  --link-color: var(--alt-link-color);
+  --visited-link-color: var(--alt-visited-link-color);
+  
+  --transform: translateX(26px);
+  --slider-bg: #66bb6a;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Space One', sans-serif;
+  color: var(--font-color);
+}
+
+p {
+  font-family: 'Nunito', sans-serif;
+  color: var(--font-color);
+}
+
+#container:hover {
+  transition: background .15s ease;
+}
+
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+
+  em {
+    margin-left: 10px;
+    font-size: 1rem;
+  }
+}
+
+.theme-switch-wrapper > h2 {
+  margin: 0 5px 0 0;
+  font-family: 'Noto Color Emoji', 'Nunito', sans-serif;
+  font-size: 24px;
+}
+
+.theme-switch {
+  display: block;
+  position: relative;
+
+  height: 34px;
+  width: 60px;
+}
+
+.slider {
+  cursor: pointer;
+  
+  transition: .4s;
+  background-color: var(--slider-bg);
+
+  height: 100%;
+  width: 100%;
+}
+
+.slider:before {
+  transform: var(--transform);
+  transition: .25s;
+
+  display: block;
+  position: relative;
+
+  width: 26px;
+  height: 26px;
+  top: 4px;
+  left: 4px;
+  
+  content: "";
+  background-color: #fff;
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+#container {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  width: 100%;
+  height: 100%;
+
+  padding: 0;
+  margin: 0;
+  
+  background: var(--bg-color);
+}
+
+/* Content */
+#header {
+  display: flex;
+  position: relative;
+
+  flex-direction: row;
+  flex-wrap: nowrap;
+
+  align-items: center;
+  justify-content: center;
+
+  line-height: 34px;
+
+  width: 70%;
+  height: 12.5%;
+
+  padding: 0 15% 0 15%;
+  margin-bottom: 3%;
+}
+
+#header-links {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+
+  min-width: 25%;
+  max-width: 800px;
+
+  justify-content: space-between;
+  align-items: center;
+
+  position: absolute;
+
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#header-links > h2 {
+  padding: 5%;
+  
+  text-decoration: none;
+  color: var(--font-color);
+
+  margin: 0 auto;
+}
+
+#header > .theme-switch-wrapper {
+  flex: 0 1 auto;
+  margin: 0 10% 0 auto;
+}
+
+#content {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: left;
+
+  width: 30%;
+  height: 100%;
+
+  border-radius: 1.5%;
+
+
+  margin-bottom: 3%;
+}
+
+#content > h2 {
+
+  margin-top: 20px;
+  margin-bottom: 0;
+
+  color: var(--font-color);
+}
+
+#content > p {
+  color: var(--font-color);
+  text-align: center;
+}
+
+@media only screen and (max-width: 1000px) {
+  #header {
+    width: 100%;
+    transition: .1;
+  }
+
+  #content {
+    width: 90%;
+    transition: .1;
+  }
+
+  #header-links {
+    flex-direction: column;
+    left: 10%;
+    transform: none;
+  }
+}
+
+#github-link {
+  text-decoration: none;
+}
+
+#github-link {
+  outline: none;
+}
+
+#github-link:link {
+  color: var(--link-color);
+}
+
+#github-link:visited {
+  color: var(--visited-link-color);
+}
