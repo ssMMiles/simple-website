@@ -22,16 +22,16 @@ html {
   --header-bg-color: #0b132b;
   --content-bg-color: #1c2541;
   --accent-color: #5bc0be;
-  --link-color: #8cc0e2;
-  --visited-link-color: #57b373;
+  --link-color: #9EFFFD;
+  --visited-link-color: #A3FFE3;
 
   --alt-font-color: #424242;
   --alt-bg-color: #fff;
   --alt-header-bg-color: #6d6666;
   --alt-content-bg-color: #6d6666;
   --alt-accent-color: #5bc0be;
-  --alt-link-color: #8cc0e2;
-  --alt-visited-link-color: #57b373;
+  --alt-link-color: #0A0E8F;
+  --alt-visited-link-color: #9212B5;
 }
 
 @media (prefers-color-scheme: light) {
@@ -41,16 +41,16 @@ html {
     --header-bg-color: #424242;
     --content-bg-color: #ccc;
     --accent-color: #5bc0be;
-    --link-color: #8cc0e2;
-    --visited-link-color: #57b373;
+    --link-color: #0A0E8F;
+    --visited-link-color: #9212B5;
 
     --alt-font-color: #fff;
     --alt-bg-color: #000;
     --alt-content-bg-color: #424242;
     --alt-header-bg-color: #6d6666;
     --alt-accent-color: #5bc0be;
-    --alt-link-color: #8cc0e2;
-    --alt-visited-link-color: #57b373;
+    --alt-link-color: #9EFFFD;
+    --alt-visited-link-color: #A3FFE3;
   }
 
   #theme-switch-sun {
@@ -277,15 +277,8 @@ p {
 }
 
 #github-link {
-  text-decoration: none;
-}
-
-#github-link {
-  outline: none;
-}
-
-#github-link:link {
   color: var(--link-color);
+  text-decoration: none;
 }
 
 #github-link:visited {
