@@ -1,3 +1,11 @@
+#letter-wrapper {
+  display: block;
+  position: relative;
+  
+  width: 250px;
+  height: 250px;
+}
+
 .letter-image {
   position: absolute;
   top: 50%;
