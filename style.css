@@ -8,10 +8,6 @@
   src: url(assets/fonts/Nunito-Regular.woff2) format("woff2");
 }
 
-@font-face {
-  font-family: "Noto Color Emoji";
-  src: url(assets/fonts/NotoColorEmoji-Regular.ttf);
-}
 
 body {
   overflow-y: scroll;
@@ -125,7 +121,6 @@ p {
 
 .theme-switch-wrapper > h2 {
   margin: 0 5px 0 0;
-  font-family: 'Noto Color Emoji', 'Nunito', sans-serif;
   font-size: 24px;
 }
 
@@ -273,14 +268,14 @@ p {
   text-align: center;
 }
 
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 1200px) {
   #header {
     width: 100%;
     transition: .1;
   }
 
   #content {
-    width: 90%;
+    width: 80%;
     transition: .1;
   }
 
