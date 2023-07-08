@@ -304,12 +304,6 @@ p {
   height: 250px;
 }
 
-.letter-ghost {
-  position: static;
-  width: 250px;
-  height: 250px;
-}
-
 .letter-image {
   position: absolute;
   top: 50%;
