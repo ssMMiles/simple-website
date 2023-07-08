@@ -37,16 +37,16 @@ html {
   :root {
     --font-color: #424242;
     --bg-color: #fff;
-    --header-bg-color: #424242;
-    --content-bg-color: #ccc;
+    --header-bg-color: #6d6666;
+    --content-bg-color: #6d6666;
     --accent-color: #5bc0be;
     --link-color: #0A0E8F;
     --visited-link-color: #9212B5;
 
     --alt-font-color: #fff;
-    --alt-bg-color: #000;
-    --alt-content-bg-color: #424242;
-    --alt-header-bg-color: #6d6666;
+    --alt-bg-color: #3a506b;
+    --alt-content-bg-color: #0b132b;
+    --alt-header-bg-color: #1c2541;
     --alt-accent-color: #5bc0be;
     --alt-link-color: #9EFFFD;
     --alt-visited-link-color: #A3FFE3;
