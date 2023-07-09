@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <style type="text/css">
+    @font-face {
+      font-family: "Nunito";
+      src: url(assets/fonts/Nunito-Regular.woff2) format("woff2");
+      font-display: swap;
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <link rel="stylesheet" type="text/css" href="music.css" />
+
+  <script async defer type='text/javascript' src="disco-ball.js"></script>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+  <link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#5bbad5">
+  <link rel="shortcut icon" href="/assets/favicon.ico">
+
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#ffffff">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="og:title" content="Miles Moonlove">
+  <meta name="og:type" content="website">
+  <meta name="og:url" content="https://smiles.dev">
+  <meta name="og:image" content="https://smiles.dev/assets/android-chrome-512x512.png">
+  <meta name="og:description"
+    content="I write a bunch of code for whatever I find fun at the time. You can find some of it on my GitHub (@ssMMiles).">
+
+  <title>Miles Moonlove</title>
+  <meta name="description"
+    content="I write a bunch of code for whatever I find fun at the time. You can find some of it on my GitHub (@ssMMiles).">
+
+</head>
+
+<body>
+  <input type="checkbox" id="toggleTheme">
+  <div id="container">
+    <div id="header">
+      <div id="header-links">
+        <a href="./index.html">
+          <h2>About Me</h2>
+        </a>
+      </div>
+      <div class="theme-switch-wrapper">
+        <h2 id="theme-switch-moon">🌙</h2>
+        <h2 id="theme-switch-sun">☀️</h2>
+        <label class="theme-switch" for="toggleTheme">
+          <div class="slider round"></div>
+        </label>
+      </div>
+    </div>
+    <div id="content">
+      <h2>come listen to a funky tune</h2>
+      <iframe id="spotify" style="border-radius:12px"
+        src="https://open.spotify.com/embed/track/2rvo9Ddv18aRV0OJldhWTf?utm_source=generator" width="100%" height="352"
+        frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy">
+      </iframe>
+      <div id="disco-ball-wrapper">
+        <div id="disco-ball-cover"></div>
+        <div id="discoBallLight"></div>
+        <div id="discoBall">
+          <div id="discoBallMiddle"></div>
+        </div>
+      </div>
+      <img class="image" id="monke1" src="assets/gifs/funkymonkey.gif" alt="FUNKY ASS MONKEY" />
+      <img class="image" id="monke2" src="assets/gifs/funkymonkey.gif" alt="FUNKY ASS MONKEY" />
+      <img class="image" id="monke3" src="assets/gifs/funkymonkey.gif" alt="FUNKY ASS MONKEY" />
+      <img class="image" id="monke4" src="assets/gifs/funkymonkey.gif" alt="FUNKY ASS MONKEY" />
+      <img class="image" id="monke5" src="assets/gifs/funkymonkey.gif" alt="FUNKY ASS MONKEY" />
+      <img class="image" id="monke6" src="assets/gifs/funkymonkey.gif" alt="FUNKY ASS MONKEY" />
+      <img class="image" id="monke7" src="assets/gifs/funkymonkey.gif" alt="FUNKY ASS MONKEY" />
+    </div>
+  </div>
+</body>
+
+</html>

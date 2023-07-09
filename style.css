@@ -109,10 +109,6 @@ p {
   color: var(--font-color);
 }
 
-#container:hover {
-  transition: background .15s ease;
-}
-
 .theme-switch-wrapper {
   display: flex;
   align-items: center;
@@ -189,6 +185,7 @@ p {
   margin: 0;
   
   background: var(--bg-color);
+  transition: background .15s ease;
 }
 
 /* Content */
@@ -237,6 +234,11 @@ p {
   color: var(--font-color);
 
   margin: 0 auto;
+}
+
+#header-links > a {
+  text-decoration: underline var(--accent-color);
+  text-underline-offset: 4px;
 }
 
 #header > .theme-switch-wrapper {
