@@ -310,7 +310,7 @@ a {
   text-decoration: none;
 }
 
-#github-link:visited {
+a:visited {
   color: var(--visited-link-color);
 }
 
