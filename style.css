@@ -305,7 +305,7 @@ p {
 }
 
 
-#github-link {
+a {
   color: var(--link-color);
   text-decoration: none;
 }
