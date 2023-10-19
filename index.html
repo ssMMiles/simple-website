@@ -8,9 +8,478 @@
       src: url(assets/fonts/Nunito-Regular.woff2) format("woff2");
       font-display: swap;
     }
-  </style>
-  <link rel="stylesheet" type="text/css" href="style.css" />
 
+    body {
+        overflow: auto;
+    }
+
+    body,
+    html {
+        margin: 0;
+        min-height: 100vh;
+    }
+
+    #theme-switch-moon {
+        display: none;
+    }
+
+    :root {
+        --transform: none;
+        --slider-bg: #ccc;
+
+        --dark-font-color: #fff;
+        --dark-bg-color: #3a506b;
+        --dark-header-bg-color: #0b132b;
+        --dark-content-bg-color: #1c2541;
+        --dark-accent-color: #5bc0be;
+        --dark-link-color: #9EFFFD;
+        --dark-visited-link-color: #A3FFE3;
+
+        --light-font-color: #424242;
+        --light-bg-color: #fff;
+        --light-header-bg-color: #6d6666;
+        --light-content-bg-color: #6d6666;
+        --light-accent-color: #5bc0be;
+        --light-link-color: #0A0E8F;
+        --light-visited-link-color: #9212B5;
+
+        --font-color: var(--dark-font-color);
+        --bg-color: var(--dark-bg-color);
+        --header-bg-color: var(--dark-header-bg-color);
+        --content-bg-color: var(--dark-content-bg-color);
+        --accent-color: var(--dark-accent-color);
+        --link-color: var(--dark-link-color);
+        --visited-link-color: var(--dark-visited-link-color);
+
+        --alt-font-color: var(--light-font-color);
+        --alt-bg-color: var(--light-bg-color);
+        --alt-header-bg-color: var(--light-header-bg-color);
+        --alt-content-bg-color: var(--light-content-bg-color);
+        --alt-accent-color: var(--light-accent-color);
+        --alt-link-color: var(--light-link-color);
+        --alt-visited-link-color: var(--light-visited-link-color);
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --font-color: var(--light-font-color);
+            --bg-color: var(--light-bg-color);
+            --header-bg-color: var(--light-header-bg-color);
+            --content-bg-color: var(--light-content-bg-color);
+            --accent-color: var(--light-accent-color);
+            --link-color: var(--light-link-color);
+            --visited-link-color: var(--light-visited-link-color);
+
+            --alt-font-color: var(--dark-font-color);
+            --alt-bg-color: var(--dark-bg-color);
+            --alt-header-bg-color: var(--dark-header-bg-color);
+            --alt-content-bg-color: var(--dark-content-bg-color);
+            --alt-accent-color: var(--dark-accent-color);
+            --alt-link-color: var(--dark-link-color);
+            --alt-visited-link-color: var(--dark-visited-link-color);
+        }
+
+        #theme-switch-sun {
+            display: none;
+        }
+
+        #theme-switch-moon {
+            display: inline-block;
+        }
+    }
+
+    #toggleTheme {
+        display: none;
+    }
+
+    #toggleTheme:checked~#container {
+        --font-color: var(--alt-font-color);
+        --bg-color: var(--alt-bg-color);
+        --header-bg-color: var(--alt-header-bg-color);
+        --content-bg-color: var(--alt-content-bg-color);
+        --accent-color: var(--alt-accent-color);
+        --link-color: var(--alt-link-color);
+        --visited-link-color: var(--alt-visited-link-color);
+
+        --transform: translateX(26px);
+        --slider-bg: #66bb6a;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: Arial, sans-serif;
+        color: var(--font-color);
+    }
+
+    p {
+        font-family: 'Nunito', sans-serif;
+        color: var(--font-color);
+    }
+
+    .theme-switch-wrapper {
+        display: flex;
+        align-items: center;
+
+        em {
+            margin-left: 10px;
+            font-size: 1rem;
+        }
+    }
+
+    .theme-switch-wrapper>h2 {
+        margin: 0 5px 0 0;
+        font-size: 24px;
+    }
+
+    .theme-switch {
+        display: block;
+        position: relative;
+
+        height: 34px;
+        width: 60px;
+    }
+
+    .slider {
+        cursor: pointer;
+
+        transition: .4s;
+        background-color: var(--slider-bg);
+
+        height: 100%;
+        width: 100%;
+    }
+
+    .slider:before {
+        transform: var(--transform);
+        transition: .25s;
+
+        display: block;
+        position: relative;
+
+        width: 26px;
+        height: 26px;
+        top: 4px;
+        left: 4px;
+
+        content: "";
+        background-color: #fff;
+    }
+
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+    #container {
+        display: flex;
+        flex-direction: column;
+
+        justify-content: start;
+        align-items: center;
+
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        width: 100%;
+        min-height: 100vh;
+
+        padding: 0;
+        margin: 0;
+
+        background: var(--bg-color);
+        transition: background .15s ease;
+    }
+
+    /* Content */
+    #header {
+        display: flex;
+        position: relative;
+
+        flex-direction: row;
+        flex-wrap: nowrap;
+
+        align-items: center;
+        justify-content: center;
+
+        line-height: 34px;
+
+        width: 50%;
+        height: 7.5vh;
+
+        min-height: 140px;
+
+        padding: 0 15% 0 15%;
+        margin-bottom: 3%;
+    }
+
+    #header-links {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+
+        min-width: 25%;
+        max-width: 800px;
+
+        justify-content: space-between;
+        align-items: center;
+
+        position: absolute;
+
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    #header-links>h2 {
+        padding: 5%;
+
+        text-decoration: none;
+        color: var(--font-color);
+
+        margin: 0 auto;
+    }
+
+    #header-links>a {
+        text-decoration: underline var(--accent-color);
+        text-underline-offset: 4px;
+    }
+
+    #header>.theme-switch-wrapper {
+        flex: 0 1 auto;
+        margin: 0 10% 0 auto;
+    }
+
+    #content {
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: left;
+
+        width: 30%;
+        height: 100%;
+
+        border-radius: 1.5%;
+
+
+        margin-bottom: 3%;
+    }
+
+    #content>h2 {
+
+        margin-top: 20px;
+        margin-bottom: 0;
+
+        color: var(--font-color);
+    }
+
+    #content>p {
+        letter-spacing: 1px;
+        color: var(--font-color);
+        text-align: center;
+    }
+
+    @media only screen and (max-width: 1000px) {
+        #header {
+            height: 2.5vh;
+            min-height: 60px;
+
+            width: 100%;
+
+            padding: 0;
+        }
+
+        #content {
+            width: 80%;
+        }
+
+        #header-links {
+            flex-direction: column;
+            left: 10%;
+            transform: none;
+        }
+    }
+
+    @media only screen and (max-width: 600px) {
+        #header>.theme-switch-wrapper {
+            margin: 0;
+        }
+    }
+
+
+    a {
+        color: var(--link-color);
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    a:visited {
+        color: var(--visited-link-color);
+    }
+
+    /* Letter Animation */
+    #letter-wrapper {
+        position: relative;
+
+        width: 250px;
+        height: 250px;
+    }
+
+    .letter-image {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 200px;
+        height: 200px;
+        -webkit-transform: translate(-50%, -50%);
+        -moz-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        cursor: pointer;
+    }
+
+    .animated-mail {
+        position: absolute;
+        height: 150px;
+        width: 200px;
+        -webkit-transition: 0.4s;
+        -moz-transition: 0.4s;
+        transition: 0.4s;
+    }
+
+    .animated-mail .body {
+        position: absolute;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 0 100px 200px;
+        border-color: transparent transparent #e95f55 transparent;
+        z-index: 2;
+    }
+
+    .animated-mail .top-fold {
+        position: absolute;
+        top: 50px;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 52px 100px 0 100px;
+        -webkit-transform-origin: 50% 0%;
+        -webkit-transition: transform 0.4s 0.4s, z-index 0.2s 0.4s;
+        -moz-transform-origin: 50% 0%;
+        -moz-transition: transform 0.4s 0.4s, z-index 0.2s 0.4s;
+        transform-origin: 50% 0%;
+        transition: transform 0.4s 0.4s, z-index 0.2s 0.4s;
+        border-color: #cf4a43 transparent transparent transparent;
+        z-index: 2;
+    }
+
+    .animated-mail .back-fold {
+        position: absolute;
+        bottom: 0;
+        width: 200px;
+        height: 100px;
+        background: #cf4a43;
+        z-index: 0;
+    }
+
+    .animated-mail .left-fold {
+        position: absolute;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 50px 0 50px 102px;
+        border-color: transparent transparent transparent #e15349;
+        z-index: 2;
+    }
+
+    .animated-mail .letter {
+        left: 20px;
+        bottom: 0px;
+        position: absolute;
+        width: 160px;
+        height: 60px;
+        background: white;
+        z-index: 1;
+        overflow: hidden;
+        -webkit-transition: 0.4s 0.2s;
+        -moz-transition: 0.4s 0.2s;
+        transition: 0.4s 0.2s;
+    }
+
+    .animated-mail .letter .letter-border {
+        height: 10px;
+        width: 100%;
+        background: repeating-linear-gradient(-45deg, #cb5a5e, #cb5a5e 8px, transparent 8px, transparent 18px);
+    }
+
+    .animated-mail .letter .letter-title {
+        margin-top: 10px;
+        margin-left: 5px;
+        height: 10px;
+        width: 40%;
+        background: #cb5a5e;
+    }
+
+    .animated-mail .letter .letter-context {
+        margin-top: 10px;
+        margin-left: 5px;
+        height: 10px;
+        width: 20%;
+        background: #cb5a5e;
+    }
+
+    .animated-mail .letter .letter-stamp {
+        margin-top: 30px;
+        margin-left: 120px;
+        border-radius: 100%;
+        height: 30px;
+        width: 30px;
+        background: #cb5a5e;
+        opacity: 0.3;
+    }
+
+    .letter-image:hover .animated-mail {
+        transform: translateY(50px);
+        -webkit-transform: translateY(50px);
+        -moz-transform: translateY(50px);
+    }
+
+    .letter-image:hover .animated-mail .top-fold {
+        transition: transform 0.4s, z-index 0.2s;
+        transform: rotateX(180deg);
+        -webkit-transition: transform 0.4s, z-index 0.2s;
+        -webkit-transform: rotateX(180deg);
+        -moz-transition: transform 0.4s, z-index 0.2s;
+        -moz-transform: rotateX(180deg);
+        z-index: 0;
+    }
+
+    .letter-image:hover .animated-mail .letter {
+        height: 180px;
+    }
+
+    .letter-invite {
+        display: flex;
+
+        justify-content: center;
+    }
+
+    .letter-invite>p {
+        text-decoration: none;
+        color: #000;
+    }
+  </style>
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
@@ -36,59 +505,61 @@
   <input type="checkbox" id="toggleTheme">
   <div id="container">
     <div id="header">
-      <div id="header-links">
-        <a href="./music.html">
-          <h2>Music</h2>
-        </a>
-      </div>
-      <div class="theme-switch-wrapper">
-        <h2 id="theme-switch-moon">🌙</h2>
-        <h2 id="theme-switch-sun">☀️</h2>
-        <label class="theme-switch" for="toggleTheme">
-          <div class="slider round"></div>
-        </label>
-      </div>
+        <div id="header-links">
+            <a href="./music.html">
+                <h2>Music</h2>
+            </a>
+        </div>
+        <div class="theme-switch-wrapper">
+            <h2 id="theme-switch-moon">🌙</h2>
+            <h2 id="theme-switch-sun">☀️</h2>
+            <label class="theme-switch" for="toggleTheme">
+                <div class="slider round"></div>
+            </label>
+        </div>
     </div>
     <div id="content">
-      <h2>Hey, I'm Miles!</h2>
-      <p>
-        I write a bunch of code for whatever I find fun at the time. You can find some of it on my <a id="github-link" href="https://github.com/ssMMiles" rel="noopener noreferrer" target="_blank">GitHub</a>.</br>
-        </br>
-        I've also made a couple of popular Discord Bots:</br>
-        </br>
-        • <a href="https://discord.com/application-directory/972637072991068220" rel="noopener noreferrer" target="_blank">Grow a Tree</a> (600,000 Players, 90,000 Communities)</br>
-        • Pokécord (5M Players, 1.3M Communities)
-      </p>
-      <p>
-        If you'd like to get in touch for any reason, click below to send me an email!
-      </p>
-      <!-- Hide email from bots -->
-      <!--sse-->
+        <h2>Hey, I'm Miles!</h2>
+        <p>
+            I write a bunch of code for whatever I find fun at the time. You can find some of it on my <a id="github-link"
+                href="https://github.com/ssMMiles" rel="noopener noreferrer" target="_blank">GitHub</a>.</br>
+            </br>
+            I've also made a couple of popular Discord Bots:</br>
+            </br>
+            • <a href="https://discord.com/application-directory/972637072991068220" rel="noopener noreferrer"
+                target="_blank">Grow a Tree</a> (975,000 Players, 130,000 Communities)</br>
+            • Pokécord (5M Players, 1.3M Communities)
+        </p>
+        <p>
+            If you'd like to get in touch for any reason, click below to send me an email!
+        </p>
+        <!-- Hide email from bots -->
+        <!--sse-->
         <div id="letter-wrapper">
-          <a href="mailto:contact@smiles.dev">
-            <div class="letter-image">
-              <div class="animated-mail">
-                <div class="back-fold"></div>
-                <div class="letter">
-                  <div class="letter-border"></div>
-                  <div class="letter-invite">
-                    <p>contact@smiles.dev</p>
-                  </div>
-                  <div class="letter-title"></div>
-                  <div class="letter-context"></div>
-                  <div class="letter-stamp">
-                    <div class="letter-stamp-inner"></div>
-                  </div>
+            <a href="mailto:contact@smiles.dev">
+                <div class="letter-image">
+                    <div class="animated-mail">
+                        <div class="back-fold"></div>
+                        <div class="letter">
+                            <div class="letter-border"></div>
+                            <div class="letter-invite">
+                                <p>contact@smiles.dev</p>
+                            </div>
+                            <div class="letter-title"></div>
+                            <div class="letter-context"></div>
+                            <div class="letter-stamp">
+                                <div class="letter-stamp-inner"></div>
+                            </div>
+                        </div>
+                        <div class="top-fold"></div>
+                        <div class="body"></div>
+                        <div class="left-fold"></div>
+                    </div>
                 </div>
-                <div class="top-fold"></div>
-                <div class="body"></div>
-                <div class="left-fold"></div>
-              </div>
-            </div>
-          </a>
+            </a>
         </div>
-      <!--/sse-->
+        <!--/sse-->
     </div>
-  </div>
+</div>
 </body>
 </html>
