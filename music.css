@@ -4,8 +4,8 @@
 
   --monke-1-start-x: 0;
   --monke-1-start-y: 0;
-  --monke-1-end-x: 100vw;
-  --monke-1-end-y: 100vh;
+  --monke-1-end-x: 50vw;
+  --monke-1-end-y: 80vh;
 
   /* Monke 2 */
   --monke-2-start-x: 20vw;
@@ -128,8 +128,8 @@
   left: var(--monke-2-start-x);
 
   animation:
-    moveX2 3.05s linear 0s infinite alternate,
-    moveY2 3.4s linear 0s infinite alternate;
+    moveX2 2.05s linear 0s infinite alternate,
+    moveY2 2.2s linear 0s infinite alternate;
 }
 
 @keyframes moveX3 {
@@ -157,8 +157,8 @@
   left: var(--monke-3-start-x);
 
   animation:
-    moveX3 3.05s linear 0s infinite alternate,
-    moveY3 3.4s linear 0s infinite alternate;
+    moveX3 3.65s linear 0s infinite alternate,
+    moveY3 2s linear 0s infinite alternate;
 }
 
 @keyframes moveX4 {
@@ -186,7 +186,7 @@
   left: var(--monke-4-start-x);
 
   animation:
-    moveX4 3.05s linear 0s infinite alternate,
+    moveX4 1.05s linear 0s infinite alternate,
     moveY4 3.4s linear 0s infinite alternate;
 }
 
@@ -215,8 +215,8 @@
   left: var(--monke-5-start-x);
 
   animation:
-    moveX5 3.05s linear 0s infinite alternate,
-    moveY5 3.4s linear 0s infinite alternate;
+    moveX5 4.05s linear 0s infinite alternate,
+    moveY5 4.4s linear 0s infinite alternate;
 }
 
 @keyframes moveX6 {
@@ -244,8 +244,8 @@
   left: var(--monke-6-start-x);
 
   animation:
-    moveX6 3.05s linear 0s infinite alternate,
-    moveY6 3.4s linear 0s infinite alternate;
+    moveX6 3.45s linear 0s infinite alternate,
+    moveY6 2.8s linear 0s infinite alternate;
 }
 
 @keyframes moveX7 {
@@ -273,8 +273,8 @@
   left: var(--monke-7-start-x);
 
   animation:
-    moveX7 3.05s linear 0s infinite alternate,
-    moveY7 3.4s linear 0s infinite alternate;
+    moveX7 1.05s linear 0s infinite alternate,
+    moveY7 1.4s linear 0s infinite alternate;
 }
 
 #disco-ball-wrapper {
