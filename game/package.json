@@ -1,0 +1,15 @@
+{
+  "name": "cafe-sim",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "cafe_sim_bg.wasm",
+    "cafe_sim.js",
+    "cafe_sim.d.ts"
+  ],
+  "main": "cafe_sim.js",
+  "types": "cafe_sim.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
