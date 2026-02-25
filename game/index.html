@@ -53,6 +53,14 @@
                     }
                 });
 
+                function requestLock() {
+                    if (document.pointerLockElement !== canvas) {
+                        canvas.requestPointerLock();
+                    }
+                }
+
+                canvas.addEventListener('click', requestLock);
+
                 console.log("WASM Loaded");
             } catch (e) {
                 console.error("Failed to load WASM:", e);
