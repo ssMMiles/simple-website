@@ -3,12 +3,12 @@
   "type": "module",
   "version": "0.1.0",
   "files": [
-    "cafe_sim_bg.wasm",
-    "cafe_sim.js",
-    "cafe_sim.d.ts"
+    "game_engine_lib_bg.wasm",
+    "game_engine_lib.js",
+    "game_engine_lib.d.ts"
   ],
-  "main": "cafe_sim.js",
-  "types": "cafe_sim.d.ts",
+  "main": "game_engine_lib.js",
+  "types": "game_engine_lib.d.ts",
   "sideEffects": [
     "./snippets/*"
   ]
