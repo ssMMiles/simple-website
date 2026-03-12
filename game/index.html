@@ -227,92 +227,104 @@
     </div>
 </div>
 
+<!-- Fallback: catches module import failures where the script block never runs -->
+<script>
+    window.__wasmLoaded = false;
+    window.addEventListener('error', function (e) {
+        document.getElementById('status').textContent = 'Script error — see console';
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+        document.getElementById('status').textContent = 'Load error — see console';
+        console.error('Unhandled rejection:', e.reason);
+    });
+</script>
+
     <script type="module">
-                    import init from "./pkg/game_engine_lib.js";
+                import init from "./pkg/game_engine_lib.js";
 
-                    // Spawn ambient particlesS
-                    const overlay = document.getElementById('loading-overlay');
-                    for (let i = 0; i < 16; i++) {
-                        const el = document.createElement('div');
-                        el.className = 'particle';
-                        const size = 3 + Math.random() * 6;
-                        el.style.cssText = [
-                            `width:${size}px`,
-                            `height:${size}px`,
-                            `left:${8 + Math.random() * 84}%`,
-                            `bottom:${Math.random() * 40}%`,
-                            `--dx:${(Math.random() - 0.5) * 90}px`,
-                            `animation-duration:${7 + Math.random() * 9}s`,
-                            `animation-delay:${-Math.random() * 12}s`,
-                        ].join(';');
-                        overlay.appendChild(el);
-                    }
+                const overlay = document.getElementById('loading-overlay');
+                const spinner = document.getElementById('spinner');
+                const progressWrap = document.getElementById('progress-wrap');
+                const progressFill = document.getElementById('progress-fill');
+                const statusEl = document.getElementById('status');
 
-                    const spinner = document.getElementById('spinner');
-                    const progressWrap = document.getElementById('progress-wrap');
-                    const progressFill = document.getElementById('progress-fill');
-                    const statusEl = document.getElementById('status');
+                // Spawn ambient particles
+                for (let i = 0; i < 16; i++) {
+                    const el = document.createElement('div');
+                    el.className = 'particle';
+                    const size = 3 + Math.random() * 6;
+                    el.style.cssText = [
+                        `width:${size}px`,
+                        `height:${size}px`,
+                        `left:${8 + Math.random() * 84}%`,
+                        `bottom:${Math.random() * 40}%`,
+                        `--dx:${(Math.random() - 0.5) * 90}px`,
+                        `animation-duration:${7 + Math.random() * 9}s`,
+                        `animation-delay:${-Math.random() * 12}s`,
+                    ].join(';');
+                    overlay.appendChild(el);
+                }
 
-                    function setStatus(text, prominent = false) {
-                        statusEl.textContent = text;
-                        statusEl.classList.toggle('prominent', prominent);
-                    }
+                function setStatus(text, prominent = false) {
+                    statusEl.textContent = text;
+                    statusEl.classList.toggle('prominent', prominent);
+                }
 
-                    function setProgress(pct) {
-                        progressFill.style.width = Math.min(100, pct) + '%';
-                        progressFill.classList.toggle('active', pct < 100);
-                    }
+                function setProgress(pct) {
+                    progressFill.style.width = Math.min(100, pct) + '%';
+                    progressFill.classList.toggle('active', pct < 100);
+                }
+
+                // XHR-based download with progress — more reliable than fetch+ReadableStream
+                function downloadWasm(url) {
+                    return new Promise((resolve, reject) => {
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('GET', url, true);
+                        xhr.responseType = 'arraybuffer';
+
+                        xhr.onloadstart = () => {
+                            setStatus('Downloading  0%');
+                            spinner.style.display = 'none';
+                            progressWrap.classList.add('visible');
+                        };
+
+                        xhr.onprogress = (e) => {
+                            if (e.lengthComputable) {
+                                const pct = (e.loaded / e.total) * 100;
+                                setProgress(pct);
+                                setStatus(`Downloading  ${Math.round(pct)}%`);
+                            } else {
+                                setStatus(`Downloading  ${(e.loaded / 1048576).toFixed(1)} MB`, true);
+                            }
+                        };
+
+                        xhr.onload = () => {
+                            if (xhr.status >= 200 && xhr.status < 300) {
+                                setProgress(100);
+                                resolve(new Uint8Array(xhr.response));
+                            } else {
+                                reject(new Error(`HTTP ${xhr.status}`));
+                            }
+                        };
+
+                        xhr.onerror = () => reject(new Error('Network error'));
+                        xhr.send();
+                    });
+                }
 
         async function run() {
             try {
-                // ── Phase 1: stream download ──────────────────────────────
-                const response = await fetch('./pkg/game_engine_lib_bg.wasm');
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                setStatus('Downloading\u2026', true);
 
-                const contentLength = response.headers.get('Content-Length');
-                const total = contentLength ? parseInt(contentLength, 10) : null;
-
-                if (total) {
-                    spinner.style.display = 'none';
-                    progressWrap.classList.add('visible');
-                    setStatus('Downloading  0%');
-                } else {
-                    setStatus('Downloading\u2026', true);
-                }
-
-                const reader = response.body.getReader();
-                const chunks = [];
-                let received = 0;
-
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    chunks.push(value);
-                    received += value.length;
-                    if (total) {
-                        const pct = (received / total) * 100;
-                        setProgress(pct);
-                        setStatus(`Downloading  ${Math.round(pct)}%`);
-                    } else {
-                        setStatus(`Downloading  ${(received / 1048576).toFixed(1)} MB`, true);
-                    }
-                }
-
-                // Reassemble chunks
-                const wasmBytes = new Uint8Array(received);
-                let offset = 0;
-                for (const chunk of chunks) {
-                    wasmBytes.set(chunk, offset);
-                    offset += chunk.length;
-                }
-                if (total) setProgress(100);
+                // ── Phase 1: download with progress ───────────────────────
+                const wasmBytes = await downloadWasm('./pkg/game_engine_lib_bg.wasm');
 
                 // ── Phase 2: compile + init ───────────────────────────────
                 progressWrap.classList.remove('visible');
                 spinner.style.display = '';
                 setStatus('Initializing\u2026', true);
 
-                await init(wasmBytes);
+                await init({ module_or_path: wasmBytes });
 
                 // ── Phase 3: fade out ─────────────────────────────────────
                 overlay.classList.add('fade-out');
@@ -320,7 +332,6 @@
                     overlay.style.display = 'none';
                 }, { once: true });
 
-                // Post-load setup
                 document.addEventListener('visibilitychange', () => {
                     if (document.hidden) {
                         console.log("Page hidden");
@@ -334,7 +345,8 @@
 
             } catch (e) {
                 spinner.style.display = 'none';
-                setStatus('Failed to load — see console', true);
+                progressWrap.classList.remove('visible');
+                setStatus(`Error: ${e.message} — see console`, true);
                 console.error("Failed to load WASM:", e);
             }
         }
