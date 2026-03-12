@@ -240,7 +240,7 @@
 </script>
 
     <script type="module">
-                import init from "./pkg/game_engine_lib.js";
+                import init from "./game_engine_lib.js";
 
                 const overlay = document.getElementById('loading-overlay');
                 const spinner = document.getElementById('spinner');
@@ -317,7 +317,7 @@
                 setStatus('Downloading\u2026', true);
 
                 // ── Phase 1: download with progress ───────────────────────
-                const wasmBytes = await downloadWasm('./pkg/game_engine_lib_bg.wasm');
+                const wasmBytes = await downloadWasm('./game_engine_lib_bg.wasm');
 
                 // ── Phase 2: compile + init ───────────────────────────────
                 progressWrap.classList.remove('visible');
