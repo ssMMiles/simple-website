@@ -240,7 +240,8 @@
 </script>
 
     <script type="module">
-                import init from "./game_engine_lib.js";
+                                                import { unzipSync } from "https://cdn.jsdelivr.net/npm/fflate@0.8.2/esm/browser.js";
+                                                import init from "./pkg/game_engine_lib.js";
 
                 const overlay = document.getElementById('loading-overlay');
                 const spinner = document.getElementById('spinner');
@@ -282,72 +283,253 @@
                         xhr.open('GET', url, true);
                         xhr.responseType = 'arraybuffer';
 
-                        xhr.onloadstart = () => {
-                            setStatus('Downloading  0%');
-                            spinner.style.display = 'none';
-                            progressWrap.classList.add('visible');
-                        };
+                    xhr.onloadstart = () => {
+                        setStatus('Downloading  0%');
+                        spinner.style.display = 'none';
+                        progressWrap.classList.add('visible');
+                    };
 
-                        xhr.onprogress = (e) => {
-                            if (e.lengthComputable) {
-                                const pct = (e.loaded / e.total) * 100;
-                                setProgress(pct);
-                                setStatus(`Downloading  ${Math.round(pct)}%`);
-                            } else {
-                                setStatus(`Downloading  ${(e.loaded / 1048576).toFixed(1)} MB`, true);
-                            }
-                        };
+                    xhr.onprogress = (e) => {
+                        if (e.lengthComputable) {
+                            const pct = (e.loaded / e.total) * 100;
+                            setProgress(pct);
+                            setStatus(`Downloading  ${Math.round(pct)}%`);
+                        } else {
+                            setStatus(`Downloading  ${(e.loaded / 1048576).toFixed(1)} MB`, true);
+                        }
+                    };
 
-                        xhr.onload = () => {
-                            if (xhr.status >= 200 && xhr.status < 300) {
-                                setProgress(100);
-                                resolve(new Uint8Array(xhr.response));
-                            } else {
-                                reject(new Error(`HTTP ${xhr.status}`));
-                            }
-                        };
+                    xhr.onload = () => {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            setProgress(100);
+                            resolve(new Uint8Array(xhr.response));
+                        } else {
+                            reject(new Error(`HTTP ${xhr.status}`));
+                        }
+                    };
 
-                        xhr.onerror = () => reject(new Error('Network error'));
-                        xhr.send();
-                    });
-                }
+                    xhr.onerror = () => reject(new Error('Network error'));
+                    xhr.send();
+                });
+            }
+
+
+    async function preloadWorldFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const zipUrl = params.get("world") || params.get("worldZip");
+
+        // No world parameter? Continue with normal startup.
+        if (!zipUrl) return;
+
+        setStatus("Downloading world...", true);
+        spinner.style.display = "none";
+        progressWrap.classList.add("visible");
+        setProgress(0);
+
+        // Download ZIP
+        const response = await fetch(zipUrl);
+
+        if (!response.ok) {
+            throw new Error(`World download failed: HTTP ${response.status}`);
+        }
+
+        const zipBytes = new Uint8Array(await response.arrayBuffer());
+
+        setProgress(30);
+        setStatus("Extracting world...", true);
+
+        // Extract ZIP in memory
+        const files = unzipSync(zipBytes);
+
+        const entries = Object.entries(files)
+            .filter(([name, bytes]) =>
+                !name.endsWith("/") && bytes instanceof Uint8Array
+            )
+            .map(([name, bytes]) => ({
+                path: name.replace(/\\/g, "/").replace(/^\/+/, ""),
+                bytes
+            }));
+
+        // Protect against ZIP path traversal
+        for (const entry of entries) {
+            if (
+                !entry.path ||
+                entry.path.split("/").some(part =>
+                    part === ".." || part === "."
+                )
+            ) {
+                throw new Error(`Unsafe ZIP path: ${entry.path}`);
+            }
+        }
+
+        // Find world metadata
+        const metadata = entries.find(entry =>
+            /(?:^|\/)world\.meta$/i.test(entry.path)
+        );
+
+        if (!metadata) {
+            throw new Error("ZIP does not contain world.meta");
+        }
+
+        // Determine world ID and root directory.
+        //
+        // Supported:
+        // worlds/my-world/world.meta
+        // my-world/world.meta
+        // world.meta
+
+        const metadataParts = metadata.path.split("/");
+        const worldsIndex = metadataParts.lastIndexOf("worlds");
+
+        let worldId;
+        let worldPrefix;
+
+        if (
+            worldsIndex >= 0 &&
+            metadataParts.length > worldsIndex + 2
+        ) {
+            worldId = metadataParts[worldsIndex + 1];
+            worldPrefix =
+                metadataParts.slice(0, worldsIndex + 2).join("/") + "/";
+        } else {
+            worldId = metadataParts.length > 1
+                ? metadataParts[metadataParts.length - 2]
+                : "imported-world";
+
+            worldPrefix = metadataParts.length > 1
+                ? metadataParts.slice(0, -1).join("/") + "/"
+                : "";
+        }
+
+        if (!/^[a-zA-Z0-9_-]+$/.test(worldId)) {
+            throw new Error(`Invalid world ID: ${worldId}`);
+        }
+
+        // Get browser OPFS root
+        const root = await navigator.storage.getDirectory();
+
+        // Write a file into OPFS using the same directory layout
+        // expected by WasmStorage.
+        async function writeOpfsFile(key, bytes) {
+            const parts = key.split("/");
+            const filename = parts.pop();
+
+            let dir = root;
+
+            for (const part of parts) {
+                dir = await dir.getDirectoryHandle(part, {
+                    create: true
+                });
+            }
+
+            const handle = await dir.getFileHandle(filename, {
+                create: true
+            });
+
+            const writable = await handle.createWritable();
+            await writable.write(bytes);
+            await writable.close();
+        }
+
+        // Import all files belonging to this world.
+        const worldEntries = entries.filter(entry =>
+            worldPrefix
+                ? entry.path.startsWith(worldPrefix)
+                : true
+        );
+
+        let imported = 0;
+
+        for (const entry of worldEntries) {
+            const relativePath = worldPrefix
+                ? entry.path.slice(worldPrefix.length)
+                : entry.path;
+
+            if (!relativePath) continue;
+
+            await writeOpfsFile(
+                `worlds/${worldId}/${relativePath}`,
+                entry.bytes
+            );
+
+            imported++;
+        }
+
+        if (imported === 0) {
+            throw new Error("No world files were imported");
+        }
+
+        // Create a project pointing at the imported world.
+        const projectId = `imported-${worldId}`;
+
+        const projectName = `Imported ${worldId}`
+            .replace(/["\\]/g, "");
+
+        const manifest = [
+            `name = "${projectName}"`,
+            "plugins = []",
+            `worlds = ["${worldId}"]`,
+            `start_world = "${worldId}"`,
+            ""
+        ].join("\n");
+
+        await writeOpfsFile(
+            `projects/${projectId}/project.toml`,
+            new TextEncoder().encode(manifest)
+        );
+
+        setProgress(100);
+        setStatus(`World ready · ${imported} files`, true);
+
+        console.info(
+            `Imported world "${worldId}" (${imported} files)`
+        );
+    }
+
 
         async function run() {
             try {
-                setStatus('Downloading\u2026', true);
+                // Phase 0: Import optional world ZIP
+                await preloadWorldFromUrl();
 
-                // ── Phase 1: download with progress ───────────────────────
-                const wasmBytes = await downloadWasm('./game_engine_lib_bg.wasm');
+                progressWrap.classList.remove("visible");
+                spinner.style.display = "";
 
-                // ── Phase 2: compile + init ───────────────────────────────
-                progressWrap.classList.remove('visible');
-                spinner.style.display = '';
-                setStatus('Initializing\u2026', true);
+                setStatus("Downloading…", true);
+
+                // Phase 1: Download WASM
+                const wasmBytes = await downloadWasm(
+                    "./pkg/game_engine_lib_bg.wasm"
+                );
+
+                // Phase 2: Initialize engine
+                progressWrap.classList.remove("visible");
+                spinner.style.display = "";
+                setStatus("Initializing…", true);
 
                 await init({ module_or_path: wasmBytes });
 
-                // ── Phase 3: fade out ─────────────────────────────────────
-                overlay.classList.add('fade-out');
-                overlay.addEventListener('transitionend', () => {
-                    overlay.style.display = 'none';
+                // Phase 3: Fade out
+                overlay.classList.add("fade-out");
+
+                overlay.addEventListener("transitionend", () => {
+                    overlay.style.display = "none";
                 }, { once: true });
 
-                document.addEventListener('visibilitychange', () => {
-                    if (document.hidden) {
-                        console.log("Page hidden");
-                    } else {
-                        console.log("Page visible");
-                        window.dispatchEvent(new Event('resize'));
+                document.addEventListener("visibilitychange", () => {
+                    if (!document.hidden) {
+                        window.dispatchEvent(new Event("resize"));
                     }
                 });
 
                 console.log("WASM Loaded");
 
             } catch (e) {
-                spinner.style.display = 'none';
-                progressWrap.classList.remove('visible');
+                spinner.style.display = "none";
+                progressWrap.classList.remove("visible");
+
                 setStatus(`Error: ${e.message} — see console`, true);
-                console.error("Failed to load WASM:", e);
+                console.error("Failed to load:", e);
             }
         }
 
