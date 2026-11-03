@@ -241,7 +241,7 @@
 
     <script type="module">
                                                 import { unzipSync } from "https://cdn.jsdelivr.net/npm/fflate@0.8.2/esm/browser.js";
-                                                import init from "./pkg/game_engine_lib.js";
+                                                        import init from "./game_engine_lib.js";
 
                 const overlay = document.getElementById('loading-overlay');
                 const spinner = document.getElementById('spinner');
@@ -499,7 +499,7 @@
 
                 // Phase 1: Download WASM
                 const wasmBytes = await downloadWasm(
-                    "./pkg/game_engine_lib_bg.wasm"
+                    "./game_engine_lib_bg.wasm"
                 );
 
                 // Phase 2: Initialize engine
